@@ -1,5 +1,6 @@
 from blacklist import BLACKLIST
-special_chars = list("!@#$%^&*()_+-=`~\'\"\\/№;:?.,")
+import getpass
+import re
 
 
 def get_password_strength(password):
@@ -9,16 +10,14 @@ def get_password_strength(password):
         return '1 - Пароль слишком короткий'
     score = 2
     length = len(password)
-    if length > 10:
-        if length > 15:
-            if length > 26:
-                score += 3
-            else:
-                score += 2
-        else:
-            score += 1
-    chars_in_pass = [char in password for char in special_chars]
-    if any(chars_in_pass):
+    if length > 26:
+        score += 3
+    elif length > 15:
+        score += 2
+    elif length > 10:
+        score += 1
+    chars_in_pass = re.findall(r'(\W)', password)
+    if chars_in_pass:
         if len(chars_in_pass) > 1:
             score += 2
         else:
@@ -26,13 +25,14 @@ def get_password_strength(password):
     if password.lower() != password:
         score += 3
     if score >= 2 and score < 6:
-        return str(score) + ' - Неплохой пароль, но всё ещё слабый'
+        return '%d - Неплохой пароль, но всё ещё слабый' % score
     elif score < 9:
-        return str(score) + ' - Хороший пароль, но можно лучше'
+        return '%d - Хороший пароль, но можно лучше' % score
     elif score >= 9:
-        return str(score) + ' - Сильный пароль'
+        return '%d - Сильный пароль' % score
 
 
 if __name__ == '__main__':
-    input_password = input('Введите пароль: ')
+    #input_password = input('password')
+    input_password = getpass.getpass('Введите пароль: ')
     print(get_password_strength(input_password))
