@@ -33,6 +33,5 @@ def get_password_strength(password):
 
 
 if __name__ == '__main__':
-    #input_password = input('password')
     input_password = getpass.getpass('Введите пароль: ')
     print(get_password_strength(input_password))
